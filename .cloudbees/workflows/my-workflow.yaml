@@ -1,0 +1,86 @@
+apiVersion: automation.cloudbees.io/v1alpha1
+kind: workflow
+name: My workflow
+on:
+  push:
+    branches:
+      - "**"
+env:
+  BUILD_ID: ${{ cloudbees.version }}
+jobs:
+  build_TGZ:
+    steps:
+      - uses: cloudbees-io/checkout@v1
+        name: Checkout
+      - uses: docker://golang:1.20
+        name: configure version
+        run: |
+          sed -i "s/\"version\": .*/\"version\": \"$BUILD_ID\",/" ./package.json
+          cat ./package.json
+        shell: sh
+      - uses: docker://node:12
+        name: npm build
+        kind: build
+        run: |-
+          npm i -g node-gyp
+          npm install
+      - uses: docker://node:latest
+        name: scan with sonar
+        kind: scan
+        run: 'echo "to be done: scan with sonar"'
+      - uses: docker://node:12
+        name: create local package
+        run: npm pack
+      - uses: docker://node:12
+        name: verify files
+        run: ls -la
+      - uses: docker://alpine/helm:latest
+        name: publish to nexus
+        run: curl -v -u ${{ vars.guru_rep_nexus_user }}:${{ secrets.guru_rep_nexus_cred
+          }}  -X POST '${{ vars.guru_rep_nexus_url
+          }}/service/rest/v1/components?repository=npm-local' -F
+          "npm.asset=@./spring-petclinic-angular-$BUILD_ID.tgz"
+    needs: deploy_VM
+  deploy:
+    steps:
+      - uses: guru-actions/kubeconfig@1.11
+        name: setup kubeconf
+        with:
+          secname: ${{ secrets.guru_rep_petclinic_kubeconf }}
+      - uses: docker://bitnami/kubectl:latest
+        name: check kubeconf
+        run: kubectl get pods
+    needs: deploy_VM
+  build_Docker:
+    steps:
+      - uses: docker://alpine/git:2.43.0
+        name: add safe dir
+        run: |
+          git config --global --add safe.directory /cloudbees/workspace
+      - uses: cloudbees-io/checkout@v1
+        name: checkout
+      - uses: cloudbees-io/configure-oci-credentials@v1
+        name: Setup Docker Hub Registry
+        with:
+          registry: index.docker.io
+          username: ${{ vars.GURUREP_DOCKER_USERNAME }}
+          password: ${{ secrets.GURUREP_DOCKER_PASSWORD }}
+      - uses: cloudbees-io/kaniko@v1
+        name: build docker
+        kind: build
+        with:
+          dockerfile: Dockerfile
+          destination: gururepservice/spring-petclinic-angular:${{ cloudbees.version
+            }},gururepservice/spring-petclinic-angular:latest
+          build-args: BUILDKIT_CONTEXT_KEEP_GIT_DIR=1,BUILDKIT_INLINE_CACHE=1
+          labels: maintainer=Jakub Zarzycki,version=1.2.3.4
+    needs: deploy_VM
+  deploy_VM:
+    steps:
+      - uses: cloudbees-io/ssh-deploy-actions@v1
+        with:
+          host: 34.140.199.98
+          port: "22"
+          username: cnp
+          script: echo "hello world"
+          key_path: ${{ secrets.cnp_ssh_privatekey }}
