@@ -9,6 +9,7 @@ env:
   BUILD_ID: ${{ cloudbees.version }}
 jobs:
   build_TGZ:
+    needs: deploy_VM
     steps:
       - uses: cloudbees-io/checkout@v1
         name: Checkout
@@ -50,6 +51,7 @@ jobs:
         run: kubectl get pods
     needs: build_TGZ
   build_Docker:
+    needs: deploy_VM
     steps:
       - uses: docker://alpine/git:2.43.0
         name: add safe dir
@@ -73,7 +75,6 @@ jobs:
           build-args: BUILDKIT_CONTEXT_KEEP_GIT_DIR=1,BUILDKIT_INLINE_CACHE=1
           labels: maintainer=Jakub Zarzycki,version=1.2.3.4
   deploy_VM:
-    needs: build_TGZ
     steps:
       - uses: cloudbees-io/ssh-deploy-actions@v1
         with:
