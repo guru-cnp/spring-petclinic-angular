@@ -76,6 +76,13 @@ jobs:
           labels: maintainer=Jakub Zarzycki,version=1.2.3.4
   deploy_VM:
     steps:
+      - uses: cloudbees-io/ssh-deploy-actions@v1
+        with:
+          host: "34.140.199.98"
+          port: "22"
+          username: cnp
+          script: echo "hello world"
+          key_path: ${{ secrets.cnp_ssh_privatekey }}
       - uses: docker://kroniak/ssh-client:latest
         name: ssh
         shell: sh
@@ -117,11 +124,5 @@ jobs:
 
           # clean up
           rm -f data.pem
-      - uses: cloudbees-io/ssh-deploy-actions@v1
-        with:
-          host: 34.140.199.98
-          port: "22"
-          username: cnp
-          script: echo "hello world"
-          key_path: ${{ secrets.cnp_ssh_privatekey }}
+
 
