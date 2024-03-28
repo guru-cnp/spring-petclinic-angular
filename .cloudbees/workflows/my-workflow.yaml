@@ -22,7 +22,7 @@ jobs:
         name: npm build
         kind: build
         run: |-
-          npm install
+          npm install --force
       - uses: docker://node:latest
         name: scan with sonar
         kind: scan
