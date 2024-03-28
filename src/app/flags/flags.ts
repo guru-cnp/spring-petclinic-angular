@@ -16,25 +16,12 @@
  *
  */
 
+// Import Rollout SDK
 import * as Rox from 'rox-browser';
-import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
-import { enableProdMode } from '@angular/core';
-import { environment } from './environments/environment';
-import { AppModule } from './app/app.module';
-import { flags } from './app/flags/flags'
 
-if (environment.production) {
-  enableProdMode();
-}
-
-async function initPlatform() {
-  const options = { };
-  // Register the flags with Rollout
-  Rox.register('', flags);
-  // Setup the Rollout key
-  await Rox.setup('56106f48-7935-47ea-7868-514152a4add7', options);
-}
-
-initPlatform().then(function() {
-  console.log('Done loading CloudBees platform');
-});
+// Create a Roxflag in the flags container class
+export const flags = {
+  showSpecialties: new Rox.Flag(false),
+  welcomeImage: new Rox.RoxString('pets', ['cats', 'koala']),
+  welcomeMessage: new Rox.RoxString('Welcome to Petclinic', ['Bienvenue !', 'This is Petclinic'])
+};
