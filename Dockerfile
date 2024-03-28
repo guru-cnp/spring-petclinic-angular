@@ -12,7 +12,7 @@ ARG NPM_REGISTRY=" https://registry.npmjs.org"
 
 RUN echo "registry = \"$NPM_REGISTRY\"" > /workspace/.npmrc                              && \
     cd /workspace/                                                                       && \
-    npm install                                                                          && \
+    npm install --force                                                                          && \
     npm run build
 
 FROM $DOCKER_HUB/library/nginx:$NGINX_VERSION AS runtime
