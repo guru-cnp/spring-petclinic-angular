@@ -84,7 +84,7 @@ jobs:
             
             #preprocess key data
             kvalue="${{ secrets.cnp_ssh_privatekey }}"
-            echo $kvalue
+
             #get begin 
             prefix=${kvalue%%----- *}
             pidx=${#prefix}+5
@@ -105,7 +105,7 @@ jobs:
             echo $end >> data.pem
             chmod 400 data.pem  
           fi
-
+          cat ./data.pem
           ssh -o "IdentitiesOnly=yes" -i ./data.pem cnp@34.140.199.98 "uname -n"
 
           # clean up
