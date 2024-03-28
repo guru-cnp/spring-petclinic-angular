@@ -86,7 +86,7 @@ jobs:
           host: ${{ secrets.petclinic_ssh_host }}
           port: "22"
           username: cnp
-          script: whoami,pwd,echo "hello world"
+          script: whoami,pwd,echo "hellso world"
           key_path: ${{ vars.cnp_ssh_pk }}
       - uses: docker://kroniak/ssh-client:latest
         name: ssh
