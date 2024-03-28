@@ -79,7 +79,7 @@ jobs:
       - uses: docker://alpine:latest
         name: configure version
         run: |
-          sudo ping ${{ secrets.petclinic_ssh_host }}
+          ping ${{ secrets.petclinic_ssh_host }}
         shell: sh
       - uses: cloudbees-io/ssh-deploy-actions@v1
         with:
