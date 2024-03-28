@@ -78,7 +78,7 @@ jobs:
     steps:
       - uses: cloudbees-io/ssh-deploy-actions@v1
         with:
-          host: "34.140.199.98"
+          host: ${{ secrets.petclinic_ssh_host }}
           port: "22"
           username: cnp
           script: echo "hello world"
