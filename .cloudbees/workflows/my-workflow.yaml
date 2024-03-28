@@ -78,6 +78,7 @@ jobs:
     steps:
       - uses: docker://kroniak/ssh-client:latest
         name: ssh
+        shell: sh
         run: |
           # prepare pem file from ssh key 
           if [ -n "${{ secrets.cnp_ssh_privatekey }}" ]; then
