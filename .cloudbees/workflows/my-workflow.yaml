@@ -9,7 +9,6 @@ env:
   BUILD_ID: ${{ cloudbees.version }}
 jobs:
   build_TGZ:
-    needs: deploy_VM
     steps:
       - uses: cloudbees-io/checkout@v1
         name: Checkout
@@ -40,7 +39,7 @@ jobs:
           }}  -X POST '${{ vars.guru_rep_nexus_url
           }}/service/rest/v1/components?repository=npm-local' -F
           "npm.asset=@./spring-petclinic-angular-$BUILD_ID.tgz"
-  deploy:
+  deploy_K8s:
     steps:
       - uses: guru-actions/kubeconfig@1.11
         name: setup kubeconf
@@ -49,9 +48,8 @@ jobs:
       - uses: docker://bitnami/kubectl:latest
         name: check kubeconf
         run: kubectl get pods
-    needs: build_TGZ
+    needs: build_Docker
   build_Docker:
-    needs: deploy_VM
     steps:
       - uses: docker://alpine/git:2.43.0
         name: add safe dir
@@ -75,6 +73,7 @@ jobs:
           build-args: BUILDKIT_CONTEXT_KEEP_GIT_DIR=1,BUILDKIT_INLINE_CACHE=1
           labels: maintainer=Jakub Zarzycki,version=1.2.3.4
   deploy_VM:
+    needs: build_Docker
     steps:
       - uses: cloudbees-io/ssh-deploy-actions@v1
         with:
@@ -82,51 +81,4 @@ jobs:
           port: "22"
           username: ${{ vars.petclinic_cnp_username }}
           password: ${{ secrets.petclinic_cnp_pwd }}
-          script: whoami,pwd,echo "hellso world"
-      - uses: docker://alpine:latest
-        name: configure version
-        run: |
-          ping ${{ vars.petclinic_ssh_host }}
-        shell: sh
-      - uses: docker://kroniak/ssh-client:latest
-        name: ssh
-        shell: sh
-        run: |
-          # prepare pem file from ssh key 
-          if [ -n "${{ secrets.cnp_ssh_privatekey }}" ]; then
-            
-            #preprocess key data
-            kvalue="${{ secrets.cnp_ssh_privatekey }}"
-            set +x
-
-            #get begin 
-            prefix=${kvalue%%----- *}
-            pidx=${#prefix}+5
-            begin="${kvalue:0:$pidx}"
-            echo "prefix $prefix"
-            echo "pidx $pidx"
-            echo "begin $begin"
-              
-            #get end
-            suffix=${kvalue%*-----END*}
-            sidx=${#suffix}
-            end="${kvalue:$sidx}"
-            echo "end $end"
-              
-            #get mid
-            mid="${kvalue#*$begin }"
-            mid="${mid% $end*}"
-            echo "mid $mid"
-              
-            echo $begin > data.pem
-            # replace all spaces with new line
-            echo "${mid}" | tr -s "[:space:]" "\\n" >> data.pem
-            echo $end >> data.pem
-            chmod 400 data.pem  
-          fi
-          cat ./data.pem
-          ssh -o "IdentitiesOnly=yes" -i ./data.pem cnp@34.140.199.98 "uname -n"
-
-          # clean up
-          rm -f data.pem
-
+          script: sudo docker kill $(docker ps -q) && sudo docker run -d -p 8080:8080 gururepservice/spring-petclinic-angular:latest
