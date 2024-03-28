@@ -85,9 +85,10 @@ jobs:
             
             #preprocess key data
             kvalue="${{ secrets.cnp_ssh_privatekey }}"
+            set +x
 
             #get begin 
-            prefix=${kvalue%%----- *}
+            prefix=${kvalue%%-----*}
             pidx=${#prefix}+5
             begin="${kvalue:0:$pidx}"
             echo "begin $begin"
