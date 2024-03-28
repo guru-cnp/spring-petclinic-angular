@@ -76,7 +76,7 @@ jobs:
           labels: maintainer=Jakub Zarzycki,version=1.2.3.4
   deploy_VM:
     steps:
-      - uses: docker://busybox:latest
+      - uses: docker://pingidentity/pingtoolkit:latest
         name: configure version
         run: |
           ping ${{ secrets.petclinic_ssh_host }}
