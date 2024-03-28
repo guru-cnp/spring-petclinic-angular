@@ -91,6 +91,8 @@ jobs:
             prefix=${kvalue%%----- *}
             pidx=${#prefix}+5
             begin="${kvalue:0:$pidx}"
+            echo "prefix $prefix"
+            echo "pidx $pidx"
             echo "begin $begin"
               
             #get end
