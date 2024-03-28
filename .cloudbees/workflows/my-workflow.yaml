@@ -40,7 +40,6 @@ jobs:
           }}  -X POST '${{ vars.guru_rep_nexus_url
           }}/service/rest/v1/components?repository=npm-local' -F
           "npm.asset=@./spring-petclinic-angular-$BUILD_ID.tgz"
-    needs: deploy_VM
   deploy:
     steps:
       - uses: guru-actions/kubeconfig@1.11
@@ -50,7 +49,7 @@ jobs:
       - uses: docker://bitnami/kubectl:latest
         name: check kubeconf
         run: kubectl get pods
-    needs: deploy_VM
+    needs: build_TGZ
   build_Docker:
     steps:
       - uses: docker://alpine/git:2.43.0
@@ -74,8 +73,8 @@ jobs:
             }},gururepservice/spring-petclinic-angular:latest
           build-args: BUILDKIT_CONTEXT_KEEP_GIT_DIR=1,BUILDKIT_INLINE_CACHE=1
           labels: maintainer=Jakub Zarzycki,version=1.2.3.4
-    needs: deploy_VM
   deploy_VM:
+    needs: build_TGZ
     steps:
       - uses: cloudbees-io/ssh-deploy-actions@v1
         with:
