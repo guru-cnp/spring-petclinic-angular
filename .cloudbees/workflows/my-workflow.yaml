@@ -79,11 +79,11 @@ jobs:
       - uses: docker://alpine:latest
         name: configure version
         run: |
-          ping ${{ secrets.petclinic_ssh_host }}
+          ping ${{ vars.petclinic_ssh_host }}
         shell: sh
       - uses: cloudbees-io/ssh-deploy-actions@v1
         with:
-          host: ${{ secrets.petclinic_ssh_host }}
+          host: ${{ vars.petclinic_ssh_host }}
           port: "22"
           username: cnp
           script: whoami,pwd,echo "hellso world"
