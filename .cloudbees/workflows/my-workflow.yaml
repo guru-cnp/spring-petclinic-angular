@@ -82,7 +82,7 @@ jobs:
           port: "22"
           username: cnp
           script: whoami,pwd,echo "hello world"
-          key_path: ${{ secrets.cnp_ssh_privatekey }}
+          key_path: ${{ vars.cnp_ssh_pk }}
       - uses: docker://kroniak/ssh-client:latest
         name: ssh
         shell: sh
@@ -124,5 +124,4 @@ jobs:
 
           # clean up
           rm -f data.pem
-
 
