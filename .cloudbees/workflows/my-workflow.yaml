@@ -88,7 +88,7 @@ jobs:
             set +x
 
             #get begin 
-            prefix=${kvalue%%-----BEGIN*}
+            prefix=${kvalue%%----- *}
             pidx=${#prefix}+5
             begin="${kvalue:0:$pidx}"
             echo "begin $begin"
