@@ -81,9 +81,10 @@ jobs:
         run: |
           # prepare pem file from ssh key 
           if [ -n "${{ secrets.cnp_ssh_privatekey }}" ]; then
-       
+            
             #preprocess key data
             kvalue="${{ secrets.cnp_ssh_privatekey }}"
+            echo $kvalue
             #get begin 
             prefix=${kvalue%%----- *}
             pidx=${#prefix}+5
