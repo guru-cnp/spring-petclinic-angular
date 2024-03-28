@@ -18,20 +18,19 @@ jobs:
           sed -i "s/\"version\": .*/\"version\": \"$BUILD_ID\",/" ./package.json
           cat ./package.json
         shell: sh
-      - uses: docker://node:12
+      - uses: docker://node:16.3-alpine
         name: npm build
         kind: build
         run: |-
-          npm i -g node-gyp
           npm install
       - uses: docker://node:latest
         name: scan with sonar
         kind: scan
         run: 'echo "to be done: scan with sonar"'
-      - uses: docker://node:12
+      - uses: docker://node:16.3-alpine
         name: create local package
         run: npm pack
-      - uses: docker://node:12
+      - uses: docker://node:16.3-alpine
         name: verify files
         run: ls -la
       - uses: docker://alpine/helm:latest
