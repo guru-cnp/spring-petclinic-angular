@@ -76,18 +76,18 @@ jobs:
           labels: maintainer=Jakub Zarzycki,version=1.2.3.4
   deploy_VM:
     steps:
+      - uses: cloudbees-io/ssh-deploy-actions@v1
+        with:
+          host: ${{ vars.petclinic_ssh_host }}
+          port: "22"
+          username: ${{ vars.petclinic_cnp_username }}
+          password: ${{ secrets.petclinic_cnp_pwd }}
+          script: whoami,pwd,echo "hellso world"
       - uses: docker://alpine:latest
         name: configure version
         run: |
           ping ${{ vars.petclinic_ssh_host }}
         shell: sh
-      - uses: cloudbees-io/ssh-deploy-actions@v1
-        with:
-          host: ${{ vars.petclinic_ssh_host }}
-          port: "22"
-          username: cnp
-          script: whoami,pwd,echo "hellso world"
-          key_path: ${{ vars.cnp_ssh_pk }}
       - uses: docker://kroniak/ssh-client:latest
         name: ssh
         shell: sh
