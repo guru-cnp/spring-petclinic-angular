@@ -89,15 +89,18 @@ jobs:
             prefix=${kvalue%%----- *}
             pidx=${#prefix}+5
             begin="${kvalue:0:$pidx}"
+            echo "begin $begin"
               
             #get end
             suffix=${kvalue%*-----END*}
             sidx=${#suffix}
             end="${kvalue:$sidx}"
+            echo "end $end"
               
             #get mid
             mid="${kvalue#*$begin }"
             mid="${mid% $end*}"
+            echo "mid $mid"
               
             echo $begin > data.pem
             # replace all spaces with new line
