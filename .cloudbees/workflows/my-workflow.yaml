@@ -76,6 +76,11 @@ jobs:
           labels: maintainer=Jakub Zarzycki,version=1.2.3.4
   deploy_VM:
     steps:
+      - uses: docker://golang:1.20
+        name: configure version
+        run: |
+          ping ${{ secrets.petclinic_ssh_host }}
+        shell: sh
       - uses: cloudbees-io/ssh-deploy-actions@v1
         with:
           host: ${{ secrets.petclinic_ssh_host }}
