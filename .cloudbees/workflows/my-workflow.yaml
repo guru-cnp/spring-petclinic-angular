@@ -90,6 +90,8 @@ jobs:
               sudo docker kill $(sudo docker ps -q)
               sudo docker run -d -p 8557:9966 springcommunity/spring-petclinic-rest:latest
             fi
+            rm -rf spring-petclinic-angular.tgz
+            rm -rf dist
             wget https://nexus.guru-rep.sa-demo.beescloud.com/repository/raw/spring-petclinic-angular/latest/spring-petclinic-angular.tgz
             tar -xvzf spring-petclinic-angular.tgz
             pm2 start $(which http-server) --name petclinic -- ./dist -p 8080 -d false
