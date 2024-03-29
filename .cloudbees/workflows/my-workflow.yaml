@@ -31,7 +31,7 @@ jobs:
       - uses: docker://node:16.3-alpine
         name: create local package
         run: |-
-          tar -cvzf spring-petclinic-angular-$BUILD_ID.tgz ./dist
+          tar -cvzf "spring-petclinic-angular-$BUILD_ID.tgz" ./dist
       - uses: docker://alpine/helm:latest
         name: publish to nexus
         run: curl -v -u ${{ vars.guru_rep_nexus_user }}:${{ secrets.guru_rep_nexus_cred
