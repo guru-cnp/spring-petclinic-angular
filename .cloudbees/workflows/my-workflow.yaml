@@ -39,8 +39,8 @@ jobs:
           }}  -X POST '${{ vars.guru_rep_nexus_url
           }}/service/rest/v1/components?repository=raw'
           -F raw.assetN=@./dist.tgz
-          -F "raw.directory=/spring-petclinic-angular/$BUILD_ID"
-          -F "raw.assetN.filename=spring-petclinic-angular-$BUILD_ID.tgz"
+          -F "raw.directory=/spring-petclinic-angular/latest"
+          -F "raw.assetN.filename=spring-petclinic-angular.tgz"
   deploy_K8s:
     steps:
       - uses: guru-actions/kubeconfig@1.11
@@ -89,6 +89,6 @@ jobs:
               sudo docker kill $(sudo docker ps -q)
               sudo docker run -d -p 8557:9966 springcommunity/spring-petclinic-rest:latest
             fi
-            wget https://nexus.guru-rep.sa-demo.beescloud.com/repository/raw/angular/spring-petclinic-angular-$BUILD_ID.tgz
-            tar -xvzf spring-petclinic-angular-$BUILD_ID.tgz
+            wget https://nexus.guru-rep.sa-demo.beescloud.com/repository/raw/angular/latest/spring-petclinic-angular.tgz
+            tar -xvzf spring-petclinic-angular.tgz
             npm install http-server
