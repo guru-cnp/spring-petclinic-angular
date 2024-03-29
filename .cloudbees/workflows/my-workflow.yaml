@@ -81,6 +81,10 @@ jobs:
           username: ${{ vars.petclinic_cnp_username }}
           password: ${{ secrets.petclinic_cnp_pwd }}
           script: |-
+            petclinicPID=`pm2 pid petclinic`
+            if [ ! -z $petclinicPID ] ; then
+              pm2 delete petclinic 2>&1 && return 0
+            fi
             sudo docker pull springcommunity/spring-petclinic-rest:latest
             if [ \"$(sudo docker ps -q)\" ]; then
               sudo docker kill $(sudo docker ps -q)
@@ -88,4 +92,4 @@ jobs:
             fi
             wget https://nexus.guru-rep.sa-demo.beescloud.com/repository/raw/spring-petclinic-angular/latest/spring-petclinic-angular.tgz
             tar -xvzf spring-petclinic-angular.tgz
-            http-server ./dist/
+            pm2 start $(which http-server) --name petclinic -- ./dist -p 8080 -d false
