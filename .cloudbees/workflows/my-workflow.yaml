@@ -75,7 +75,7 @@ jobs:
           build-args: BUILDKIT_CONTEXT_KEEP_GIT_DIR=1,BUILDKIT_INLINE_CACHE=1
           labels: maintainer=Jakub Zarzycki,version=1.2.3.4
   deploy_VM_Nexus:
-    needs: build_TGZ
+    #needs: build_TGZ
     steps:
       - uses: cloudbees-io/ssh-deploy-actions@v1
         with:
@@ -84,6 +84,7 @@ jobs:
           username: ${{ vars.petclinic_cnp_username }}
           password: ${{ secrets.petclinic_cnp_pwd }}
           script: |-
+            echo "$BUILD_ID"
             sudo docker pull springcommunity/spring-petclinic-rest:latest
             if [ "$(sudo docker ps -q)" ]; then
               sudo docker kill $(sudo docker ps -q)
