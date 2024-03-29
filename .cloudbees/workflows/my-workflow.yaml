@@ -23,6 +23,7 @@ jobs:
         kind: build
         run: |-
           npm install --force
+          export NODE_OPTIONS=--openssl-legacy-provider
           npm run build
       - uses: docker://node:latest
         name: scan with sonar
@@ -31,13 +32,15 @@ jobs:
       - uses: docker://node:16.3-alpine
         name: create local package
         run: |-
-          tar -cvzf "spring-petclinic-angular-$BUILD_ID.tgz" ./dist
+          tar -cvzf dist.tgz ./dist
       - uses: docker://alpine/helm:latest
         name: publish to nexus
         run: curl -v -u ${{ vars.guru_rep_nexus_user }}:${{ secrets.guru_rep_nexus_cred
           }}  -X POST '${{ vars.guru_rep_nexus_url
           }}/service/rest/v1/components?repository=npm-local' -F
-          "npm.asset=@./spring-petclinic-angular-$BUILD_ID.tgz"
+          raw.assetN=@./dist.tgz"
+          raw.directory=/angular
+          "raw.assetN.filename=spring-petclinic-angular-$BUILD_ID"
   deploy_K8s:
     steps:
       - uses: guru-actions/kubeconfig@1.11
