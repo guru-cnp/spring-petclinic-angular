@@ -20,13 +20,24 @@
  * @author Vitaliy Fedoriv
  */
 
-import {Component} from '@angular/core';
-
-@Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
-})
-export class AppComponent {
-
-}
+ import { Component } from '@angular/core';
+ import { interval, Subscription } from 'rxjs';
+ import { flags } from 'app/flags/flags'
+ 
+ @Component({
+   selector: 'app-root',
+   templateUrl: './app.component.html',
+   styleUrls: ['./app.component.css']
+ })
+ export class AppComponent {
+ 
+   private updateSubscription: Subscription;
+ 
+   showSpecialties = flags.showSpecialties.isEnabled();
+ 
+   ngOnInit() {
+     this.updateSubscription = interval(1000).subscribe((val) => {
+       this.showSpecialties = flags.showSpecialties.isEnabled()
+     });
+   }
+ }

@@ -3,7 +3,6 @@ import {PetType} from '../pettype';
 import {Router} from '@angular/router';
 import {PetTypeService} from '../pettype.service';
 import {Specialty} from '../../specialties/specialty';
-import { finalize } from 'rxjs/operators';
 
 @Component({
   selector: 'app-pettype-list',
@@ -14,7 +13,6 @@ export class PettypeListComponent implements OnInit {
   pettypes: PetType[];
   errorMessage: string;
   responseStatus: number;
-  isPetTypesDataReceived: boolean = false;
   isInsert = false;
 
   constructor(private pettypeService: PetTypeService, private router: Router) {
@@ -22,14 +20,10 @@ export class PettypeListComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.pettypeService.getPetTypes().pipe(
-      finalize(() => {
-        this.isPetTypesDataReceived = true;
-      })
-    ).subscribe(
+    this.pettypeService.getPetTypes().subscribe(
       pettypes => this.pettypes = pettypes,
       error => this.errorMessage = error as any
-      );
+    );
   }
 
   deletePettype(pettype: PetType) {

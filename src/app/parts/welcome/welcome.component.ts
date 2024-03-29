@@ -21,19 +21,49 @@
  * @author Vitaliy Fedoriv
  */
 
-import {Component, OnInit} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { interval, Subscription } from 'rxjs';
+import { flags } from 'app/flags/flags'
 
 @Component({
   selector: 'app-welcome',
   templateUrl: './welcome.component.html',
   styleUrls: ['./welcome.component.css']
 })
+
 export class WelcomeComponent implements OnInit {
+
+  private updateSubscription: Subscription;
+
+  // Get the text value of welcomeMessage from CloudBees Feature Management
+  welcomeMessage = flags.welcomeMessage.getValue();
+  // Set the text value of welcomeMessage displayed on the web page
+  welcomeImage = setWelcomeImage(flags.welcomeImage.getValue());
 
   constructor() {
   }
 
   ngOnInit() {
+    // Get Flags information every second and refresh the module
+    this.updateSubscription = interval(1000).subscribe((val) => {
+      this.welcomeMessage = flags.welcomeMessage.getValue(),
+      this.welcomeImage = setWelcomeImage(flags.welcomeImage.getValue())
+    });
   }
 
 }
+
+function setWelcomeImage(welcomeImageFlag) {
+  // Set the default image to pets.png
+  let welcomeImage: string = "./assets/images/pets.png";
+
+  // Change the displayed image from its Flag value
+  if ( welcomeImageFlag == "pets" ) {
+    welcomeImage = "./assets/images/pets.png";
+  } else if ( welcomeImageFlag == "cats" ) {
+    welcomeImage = "./assets/images/cats.png";
+  } else if ( welcomeImageFlag == "koala" ) {
+    welcomeImage = "./assets/images/koala.png";
+  }
+  return welcomeImage;
+ }

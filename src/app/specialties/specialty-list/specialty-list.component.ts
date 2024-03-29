@@ -24,7 +24,6 @@ import {Component, OnInit} from '@angular/core';
 import {Specialty} from '../specialty';
 import {SpecialtyService} from '../specialty.service';
 import {Router} from '@angular/router';
-import { finalize } from 'rxjs/operators';
 
 @Component({
   selector: 'app-specialty-list',
@@ -36,18 +35,13 @@ export class SpecialtyListComponent implements OnInit {
   errorMessage: string;
   responseStatus: number;
   isInsert = false;
-  isSpecialitiesDataReceived: boolean = false;
 
   constructor(private specService: SpecialtyService, private router: Router) {
     this.specialties = [];
   }
 
   ngOnInit() {
-    this.specService.getSpecialties().pipe(
-      finalize(() => {
-        this.isSpecialitiesDataReceived = true;
-      })
-    ).subscribe(
+    this.specService.getSpecialties().subscribe(
       specialties => this.specialties = specialties,
       error => this.errorMessage = error as any);
   }
