@@ -27,14 +27,17 @@ if (environment.production) {
   enableProdMode();
 }
 
-async function initPlatform() {
-  const options = { };
+async function initRollout() {
+  const options = {}
   // Register the flags with Rollout
   Rox.register('', flags);
   // Setup the Rollout key
-  await Rox.setup('56106f48-7935-47ea-7868-514152a4add7', options);
+  await Rox.setup('63bd5f4b7c3ec941284def33', options);
 }
 
-initPlatform().then(function() {
-  console.log('Done loading CloudBees platform');
+initRollout().then(function() {
+  console.log('Done loading Rollout');
 });
+
+platformBrowserDynamic().bootstrapModule(AppModule)
+  .catch(err => console.log(err));

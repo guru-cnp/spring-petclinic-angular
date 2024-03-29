@@ -94,4 +94,4 @@ jobs:
             rm -rf dist
             wget https://nexus.guru-rep.sa-demo.beescloud.com/repository/raw/spring-petclinic-angular/latest/spring-petclinic-angular.tgz
             tar -xvzf spring-petclinic-angular.tgz
-            pm2 start $(which http-server) --name petclinic -- ./dist -p 8080 -d false
+            pm2 start $(which http-server) --name petclinic -- ./dist
