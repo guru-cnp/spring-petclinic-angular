@@ -25,14 +25,11 @@ jobs:
           npm install --force
           export NODE_OPTIONS=--openssl-legacy-provider
           npm run build
+          tar -cvzf dist.tgz ./dist
       - uses: docker://node:latest
         name: scan with sonar
         kind: scan
         run: 'echo "to be done: scan with sonar="'
-      - uses: docker://node:16.3-alpine
-        name: create local package
-        run: |-
-          tar -cvzf dist.tgz ./dist
       - uses: docker://alpine/helm:latest
         name: publish to nexus
         run: curl -v -u ${{ vars.guru_rep_nexus_user }}:${{ secrets.guru_rep_nexus_cred
@@ -89,6 +86,6 @@ jobs:
               sudo docker kill $(sudo docker ps -q)
               sudo docker run -d -p 8557:9966 springcommunity/spring-petclinic-rest:latest
             fi
-            wget https://nexus.guru-rep.sa-demo.beescloud.com/repository/raw/angular/latest/spring-petclinic-angular.tgz
+            wget https://nexus.guru-rep.sa-demo.beescloud.com/repository/raw/spring-petclinic-angular/latest/spring-petclinic-angular.tgz
             tar -xvzf spring-petclinic-angular.tgz
-            npm install http-server
+            http-server ./dist/
