@@ -18,7 +18,7 @@ jobs:
           sed -i "s/\"version\": .*/\"version\": \"$BUILD_ID\",/" ./package.json
           cat ./package.json | grep "version"
         shell: sh
-      - uses: docker://node:16.3-alpine
+      - uses: docker://angular/ngcontainer:latest
         name: npm build
         kind: build
         run: |-
