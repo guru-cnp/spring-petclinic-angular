@@ -16,7 +16,7 @@ jobs:
         name: configure version
         run: |
           sed -i "s/\"version\": .*/\"version\": \"$BUILD_ID\",/" ./package.json
-          cat ./package.json
+          cat ./package.json | grep "version"
         shell: sh
       - uses: docker://node:16.3-alpine
         name: npm build
@@ -30,9 +30,6 @@ jobs:
       - uses: docker://node:16.3-alpine
         name: create local package
         run: npm pack
-      - uses: docker://node:16.3-alpine
-        name: verify files
-        run: ls -la
       - uses: docker://alpine/helm:latest
         name: publish to nexus
         run: curl -v -u ${{ vars.guru_rep_nexus_user }}:${{ secrets.guru_rep_nexus_cred
@@ -72,8 +69,8 @@ jobs:
             }},gururepservice/spring-petclinic-angular:latest
           build-args: BUILDKIT_CONTEXT_KEEP_GIT_DIR=1,BUILDKIT_INLINE_CACHE=1
           labels: maintainer=Jakub Zarzycki,version=1.2.3.4
-  deploy_VM:
-    needs: build_Docker
+  deploy_VM_Nexus:
+    needs: build_TGZ
     steps:
       - uses: cloudbees-io/ssh-deploy-actions@v1
         with:
@@ -83,9 +80,15 @@ jobs:
           password: ${{ secrets.petclinic_cnp_pwd }}
           script: |-
             sudo docker pull springcommunity/spring-petclinic-rest:latest
-            sudo docker pull gururepservice/spring-petclinic-angular:latest
             if [ "$(sudo docker ps -q)" ]; then
               sudo docker kill $(sudo docker ps -q)
-              sudo docker run -d -p 8080:8080 gururepservice/spring-petclinic-angular:latest
               sudo docker run -d -p 8557:9966 springcommunity/spring-petclinic-rest:latest
             fi
+            wget https://nexus.guru-rep.sa-demo.beescloud.com/repository/npm-local/spring-petclinic-angular/-/spring-petclinic-angular-$BUILD_ID.tgz
+            npm i ./spring-petclinic-angular-$BUILD_ID.tgz
+            petclinicPID=`pm2 pid petclinic`
+            if [ ! -z $petclinicPID ] ; then
+              pm2 delete petclinic 2>&1 && return 0
+            fi
+            export NODE_OPTIONS=--openssl-legacy-provider
+            pm2 --name petclinic start npm -- start
