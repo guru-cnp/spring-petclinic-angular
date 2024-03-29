@@ -73,6 +73,7 @@ jobs:
           labels: maintainer=Jakub Zarzycki,version=1.2.3.4
   deploy_VM_Nexus:
     needs: build_TGZ
+    environment: petclinic-dev
     steps:
       - uses: cloudbees-io/ssh-deploy-actions@v1
         with:
