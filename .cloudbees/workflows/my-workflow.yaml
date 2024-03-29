@@ -37,10 +37,10 @@ jobs:
         name: publish to nexus
         run: curl -v -u ${{ vars.guru_rep_nexus_user }}:${{ secrets.guru_rep_nexus_cred
           }}  -X POST '${{ vars.guru_rep_nexus_url
-          }}/service/rest/v1/components?repository=npm-local' -F
-          raw.assetN=@./dist.tgz
-          raw.directory=/angular
-          "raw.assetN.filename=spring-petclinic-angular-$BUILD_ID"
+          }}/service/rest/v1/components?repository=raw'
+          -F raw.assetN=@./dist.tgz
+          -F raw.directory=/angular
+          -F "raw.assetN.filename=spring-petclinic-angular-$BUILD_ID.tgz"
   deploy_K8s:
     steps:
       - uses: guru-actions/kubeconfig@1.11
