@@ -81,4 +81,11 @@ jobs:
           port: "22"
           username: ${{ vars.petclinic_cnp_username }}
           password: ${{ secrets.petclinic_cnp_pwd }}
-          script: if [ "$(sudo docker ps -q)" ]; then sudo docker kill $(sudo docker ps -q) && sudo docker run -d -p 8080:8080 spring-petclinic:3.1.0-SNAPSHOT; fi
+          script: |-
+            sudo docker pull springcommunity/spring-petclinic-rest:latest
+            sudo docker pull gururepservice/spring-petclinic-angular:latest
+            if [ "$(sudo docker ps -q)" ]; then
+              sudo docker kill $(sudo docker ps -q)
+              sudo docker run -d -p 8080:8080 gururepservice/spring-petclinic-angular:latest
+              sudo docker run -d -p 8557:9966 springcommunity/spring-petclinic-rest:latest
+            fi
