@@ -81,6 +81,7 @@ jobs:
         name: prep script
         run: |
           echo "$BUILD_ID"
+          echo "${{env.BUILD_ID}}"
           echo "sudo docker pull springcommunity/spring-petclinic-rest:latest
             if [ \"$(sudo docker ps -q)\" ]; then
               sudo docker kill $(sudo docker ps -q)
@@ -96,4 +97,4 @@ jobs:
           port: "22"
           username: ${{ vars.petclinic_cnp_username }}
           password: ${{ secrets.petclinic_cnp_pwd }}
-          script: ./script.sh
+          script: echo ./script.sh
