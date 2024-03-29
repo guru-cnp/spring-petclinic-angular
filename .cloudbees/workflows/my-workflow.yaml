@@ -89,6 +89,6 @@ jobs:
               sudo docker kill $(sudo docker ps -q)
               sudo docker run -d -p 8557:9966 springcommunity/spring-petclinic-rest:latest
             fi
-            wget "https://nexus.guru-rep.sa-demo.beescloud.com/repository/npm-local/spring-petclinic-angular/-/spring-petclinic-angular-$BUILD_ID.tgz"
+            wget "https://nexus.guru-rep.sa-demo.beescloud.com/repository/raw/angular/spring-petclinic-angular-$BUILD_ID.tgz"
             tar -xvzf "spring-petclinic-angular-$BUILD_ID.tgz"
             npm install http-server
