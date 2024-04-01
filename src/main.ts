@@ -27,27 +27,28 @@ if (environment.production) {
   enableProdMode();
 }
 
+const API_HOST = 'https://api.cloudbees.io'
+//const API_HOST = 'https://api-staging.saas-dev.beescloud.com'
+const options = {
+  configuration: {
+    API_HOST: API_HOST,
+    CD_API_ENDPOINT: `${API_HOST}/device/get_configuration`,
+    CD_S3_ENDPOINT: 'https://development-conf.rollout.io/',
+    SS_API_ENDPOINT: `${API_HOST}/device/update_state_store/`,
+    SS_S3_ENDPOINT: 'https://development-statestore.rollout.io/',
+    CLIENT_DATA_CACHE_KEY: 'client_data',
+    ANALYTICS_ENDPOINT: 'https://localhost:8787',
+    NOTIFICATIONS_ENDPOINT: 'https://api-staging.saas-dev.beescloud.com/sse'
+  },
+  debugLevel: 'verbose',
+  disableSignatureVerification: true
+}
+
 async function initRollout() {
-  const API_HOST = 'https://api.cloudbees.io'
-  //const API_HOST = 'https://api-staging.saas-dev.beescloud.com'
-  const options = {
-    configuration: {
-      API_HOST: API_HOST,
-      CD_API_ENDPOINT: `${API_HOST}/device/get_configuration`,
-      CD_S3_ENDPOINT: 'https://development-conf.rollout.io/',
-      SS_API_ENDPOINT: `${API_HOST}/device/update_state_store/`,
-      SS_S3_ENDPOINT: 'https://development-statestore.rollout.io/',
-      CLIENT_DATA_CACHE_KEY: 'client_data',
-      ANALYTICS_ENDPOINT: 'https://localhost:8787',
-      NOTIFICATIONS_ENDPOINT: 'https://api-staging.saas-dev.beescloud.com/sse'
-    },
-    debugLevel: 'verbose',
-    disableSignatureVerification: true
-  }
   // Register the flags with Rollout
   Rox.register('', flags);
   // Setup the Rollout key
-  await Rox.setup('bee74dcf-53c3-4aa6-5c08-2b61664b1444', options);
+  await Rox.setup('bee74dcf-53c3-4aa6-5c08-2b61664b1444', options as Rox.RoxSetupOptions);
 }
 
 initRollout().then(function() {
