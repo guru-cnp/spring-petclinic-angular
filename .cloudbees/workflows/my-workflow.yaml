@@ -71,9 +71,8 @@ jobs:
             }},gururepservice/spring-petclinic-angular:latest
           build-args: BUILDKIT_CONTEXT_KEEP_GIT_DIR=1,BUILDKIT_INLINE_CACHE=1
           labels: maintainer=Jakub Zarzycki,version=1.2.3.4
-  deploy_VM_Nexus:
-    needs: build_TGZ
-    environment: petclinic-dev
+  deploy_VM_Docker:
+    needs: build_Docker
     steps:
       - uses: cloudbees-io/ssh-deploy-actions@v1
         with:
@@ -90,9 +89,5 @@ jobs:
             if [ \"$(sudo docker ps -q)\" ]; then
               sudo docker kill $(sudo docker ps -q)
               sudo docker run -d -p 8557:9966 springcommunity/spring-petclinic-rest:latest
+              sudo docker run -d -p 8080:8080 gururepservice/spring-petclinic-angular:latest
             fi
-            rm -rf spring-petclinic-angular.tgz
-            rm -rf dist
-            wget https://nexus.guru-rep.sa-demo.beescloud.com/repository/raw/spring-petclinic-angular/latest/spring-petclinic-angular.tgz
-            tar -xvzf spring-petclinic-angular.tgz
-            pm2 start $(which angular-http-server) --name petclinic -- --path ./dist
