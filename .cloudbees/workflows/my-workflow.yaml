@@ -72,7 +72,7 @@ jobs:
           build-args: BUILDKIT_CONTEXT_KEEP_GIT_DIR=1,BUILDKIT_INLINE_CACHE=1
           labels: maintainer=Jakub Zarzycki,version=1.2.3.4
   deploy_VM_Docker:
-    needs: build_Docker
+    
     steps:
       - uses: cloudbees-io/ssh-deploy-actions@v1
         with:
@@ -87,7 +87,7 @@ jobs:
             fi
             sudo docker pull springcommunity/spring-petclinic-rest:latest
             sudo docker pull gururepservice/spring-petclinic-angular:latest
-            if [ \"$(sudo docker ps -q)\" ]; then
+            if [ "$(sudo docker ps -q)" ]; then
               sudo docker kill $(sudo docker ps -q)
               sudo docker run -d -p 8557:9966 springcommunity/spring-petclinic-rest:latest
               sudo docker run -d -p 8080:8080 gururepservice/spring-petclinic-angular:latest
