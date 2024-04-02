@@ -4,92 +4,13 @@ name: ci_cd_traditional
 on:
   push:
     branches:
-      - asd
+      - "asd"
 env:
   BUILD_ID: ${{ cloudbees.version }}
-  NEXUS_HELM: ${{ vars.guru_rep_nexus_url }}/repository/helm-hosted/
+  NEXUS_API_RAW: ${{ vars.guru_rep_nexus_url }}/service/rest/v1/components?repository=raw
+  APP_NAME: spring-petclinic-angular
 jobs:
-  build_TGZ:
-    steps:
-      - uses: cloudbees-io/checkout@v1
-        name: Checkout
-      - uses: docker://golang:1.20
-        name: configure version
-        run: |
-          sed -i "s/\"version\": .*/\"version\": \"$BUILD_ID\",/" ./package.json
-          cat ./package.json | grep "version"
-        shell: sh
-      - uses: docker://node:latest
-        name: npm build
-        kind: build
-        run: |-
-          npm install --force
-          export NODE_OPTIONS=--openssl-legacy-provider
-          npm run build
-          tar -cvzf dist.tgz ./dist
-      - uses: docker://node:latest
-        name: scan with sonar
-        kind: scan
-        run: 'echo "to be done: scan with sonar="'
-      - uses: docker://alpine/helm:latest
-        name: publish to nexus
-        run: curl -v -u ${{ vars.guru_rep_nexus_user }}:${{ secrets.guru_rep_nexus_cred
-          }}  -X POST '${{ vars.guru_rep_nexus_url
-          }}/service/rest/v1/components?repository=raw'
-          -F raw.assetN=@./dist.tgz
-          -F "raw.directory=/spring-petclinic-angular/latest"
-          -F "raw.assetN.filename=spring-petclinic-angular.tgz"
-  manage_chart:
-    steps:
-      - uses: cloudbees-io/checkout@v1
-        name: checkout
-      - uses: docker://golang:1.20
-        name: configure
-        run: |
-          sed -i "s/^version:.*$/version: $BUILD_ID/" chart/spring-petclinic-angular/Chart.yaml
-          sed -i "s/^appVersion:.*$/appVersion: $BUILD_ID/" chart/spring-petclinic-angular/Chart.yaml
-          sed -i "s/^  tag:.*$/  tag: $BUILD_ID/" chart/spring-petclinic-angular/values.yaml
-          cat chart/spring-petclinic-angular/Chart.yaml
-        shell: sh
-      - uses: docker://alpine/helm:latest
-        name: package
-        run: |
-          cd chart
-          helm package spring-petclinic-angular
-          ls -lart
-        shell: sh
-      - uses: guru-actions/helm-push@1.6
-        name: publish
-        with:
-          chart_package: chart/spring-petclinic-angular-$BUILD_ID.tgz
-          remote_repo: $NEXUS_HELM
-          remote_user_name: ${{ vars.guru_rep_nexus_user }}
-          remote_password: ${{ secrets.guru_rep_nexus_cred }}
-    needs: build_Docker
-  deploy_K8s:
-    steps:
-      - uses: guru-actions/kubeconfig@1.11
-        name: setup kubeconf
-        with:
-          secname: ${{ secrets.guru_rep_petclinic_kubeconf }}
-      - uses: docker://bitnami/kubectl:latest
-        name: check kubeconf
-        run: kubectl get pods
-      - uses: guru-actions/helm-deploy@1.23
-        name: deploy chart
-        kind: deploy
-        with:
-          chart: spring-petclinic-angular/spring-petclinic-angular
-          repo: $NEXUS_HELM
-          namespace: petclinic
-          release: petclinic-fm
-          version: $BUILD_ID
-          repousername: ${{ vars.guru_rep_nexus_user }}
-          repopassword: ${{ secrets.guru_rep_nexus_cred }}
-    needs:
-      - build_Docker
-      - manage_chart
-  build_Docker:
+  build_docker:
     steps:
       - uses: docker://alpine/git:2.43.0
         name: add safe dir
