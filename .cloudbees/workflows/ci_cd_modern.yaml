@@ -18,7 +18,7 @@ jobs:
       - uses: cloudbees-io/checkout@v1
         name: checkout
       - uses: cloudbees-io/configure-oci-credentials@v1
-        name: Setup Docker Hub Registry
+        name: setup docker hub registry
         with:
           registry: index.docker.io
           username: ${{ vars.GURUREP_DOCKER_USERNAME }}
@@ -28,19 +28,29 @@ jobs:
         kind: build
         with:
           dockerfile: Dockerfile
-          destination: gururepservice/spring-petclinic-angular:${{ cloudbees.version }},gururepservice/spring-petclinic-angular:latest
+          destination: gururepservice/spring-petclinic-angular:${{ cloudbees.version
+            }},gururepservice/spring-petclinic-angular:latest
           build-args: BUILDKIT_CONTEXT_KEEP_GIT_DIR=1,BUILDKIT_INLINE_CACHE=1
           labels: maintainer=Jakub Zarzycki,version=1.2.3.4
+      - uses: cloudbees-io/sonarqube-bundled-sast-scan-code@v2
+        name: sonarqube scan
+        kind: scan
+        with:
+          language: JAVASCRIPT
   manage_chart:
     steps:
       - uses: cloudbees-io/checkout@v1
         name: checkout
       - uses: docker://golang:1.20
         name: configure
-        run: |
-          sed -i "s/^version:.*$/version: $BUILD_ID/" chart/spring-petclinic-angular/Chart.yaml
+        run: >
+          sed -i "s/^version:.*$/version: $BUILD_ID/"
+          chart/spring-petclinic-angular/Chart.yaml
+
           sed -i "s/^appVersion:.*$/appVersion: $BUILD_ID/" chart/spring-petclinic-angular/Chart.yaml
+
           sed -i "s/^  tag:.*$/  tag: $BUILD_ID/" chart/spring-petclinic-angular/values.yaml
+
           cat chart/spring-petclinic-angular/Chart.yaml
         shell: sh
       - uses: docker://alpine/helm:latest
