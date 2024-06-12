@@ -10,6 +10,11 @@ jobs:
   build_docker:
     steps:
       - uses: docker://alpine/git:2.43.0
+        name: check env vars
+        run: |
+          echo "BUILD_ID: $BUILD_ID"
+          echo "NEXUS_HELM: $NEXUS_HELM"
+      - uses: docker://alpine/git:2.43.0
         name: add safe dir
         run: |
           git config --global --add safe.directory /cloudbees/workspace
