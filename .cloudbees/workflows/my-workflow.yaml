@@ -2,9 +2,6 @@ apiVersion: automation.cloudbees.io/v1alpha1
 kind: workflow
 name: ci_cd_modern
 on:
-  push:
-    branches:
-      - master
   workflow_dispatch:
 env:
   BUILD_ID: ${{ cloudbees.version }}
