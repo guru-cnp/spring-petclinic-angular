@@ -55,6 +55,7 @@ jobs:
         name: package
         run: |
           cd chart
+          helm version
           helm package spring-petclinic-angular
           ls -lart
         shell: sh
