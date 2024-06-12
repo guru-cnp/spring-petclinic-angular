@@ -3,6 +3,9 @@ kind: workflow
 name: ci_cd_modern
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - master
 env:
   BUILD_ID: ${{ cloudbees.version }}
   NEXUS_HELM: ${{ vars.guru_rep_nexus_url }}/repository/helm-hosted/
