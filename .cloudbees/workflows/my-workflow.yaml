@@ -5,6 +5,7 @@ on:
   push:
     branches:
       - master
+  workflow_dispatch:
 env:
   BUILD_ID: ${{ cloudbees.version }}
   NEXUS_HELM: ${{ vars.guru_rep_nexus_url }}/repository/helm-hosted/
