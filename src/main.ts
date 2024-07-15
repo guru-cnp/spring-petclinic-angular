@@ -27,7 +27,7 @@ if (environment.production) {
   enableProdMode();
 }
 
-const API_HOST = 'https://api.cloudbees.io'
+/*const API_HOST = 'https://api.cloudbees.io'
 //const API_HOST = 'https://api-staging.saas-dev.beescloud.com'
 const options = {
   configuration: {
@@ -42,7 +42,8 @@ const options = {
   },
   debugLevel: 'verbose',
   disableSignatureVerification: true
-}
+}*/
+const options = { };
 
 async function initRollout() {
   // Register the flags with Rollout
