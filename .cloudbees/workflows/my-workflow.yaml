@@ -99,3 +99,14 @@ jobs:
     needs:
       - build_docker
       - manage_chart
+      - build_backend_jenkins
+  build_backend_jenkins:
+    steps:
+      - uses: cloudbees-io/cbci-run-job@v2
+        name: trigger_cbci
+        kind: build
+        with:
+          url: https://core.cloudbees.guru/shared-demos
+          username: ${{vars.GURUCI_USERNAME}}
+          token: ${{secrets.GURUCI_TOKEN}}
+          job-name: /job/spring-petclinic/job/spring-petclinic-angular-backend/
