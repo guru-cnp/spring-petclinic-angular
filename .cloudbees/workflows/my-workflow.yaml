@@ -109,5 +109,5 @@ jobs:
           url: https://core.cloudbees.guru/shared-demos
           username: ${{vars.GURUCI_USERNAME}}
           token: ${{secrets.GURUCI_TOKEN}}
-          job-name: /job/spring-petclinic/job/spring-petclinic-angular-backend/
+          job-name: spring-petclinic/job/spring-petclinic-angular-backend/
           parameters: "{version: $BUILD_ID}"
