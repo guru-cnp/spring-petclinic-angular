@@ -110,4 +110,4 @@ jobs:
           username: ${{vars.GURUCI_USERNAME}}
           token: ${{secrets.GURUCI_TOKEN}}
           job-name: spring-petclinic/job/spring-petclinic-angular-backend/
-          parameters: "{version: $BUILD_ID}"
+          parameters: "{'version': '$BUILD_ID'}"
