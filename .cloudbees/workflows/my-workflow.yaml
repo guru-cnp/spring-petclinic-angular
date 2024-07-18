@@ -97,7 +97,6 @@ jobs:
           repousername: ${{ vars.guru_rep_nexus_user }}
           repopassword: ${{ secrets.guru_rep_nexus_cred }}
     needs:
-      - build_docker
       - manage_chart
       - build_backend_jenkins
   build_backend_jenkins:
@@ -110,4 +109,4 @@ jobs:
           username: ${{vars.GURUCI_USERNAME}}
           token: ${{secrets.GURUCI_TOKEN}}
           job-name: spring-petclinic/job/spring-petclinic-angular-backend/
-          parameters: '{"version":"$BUILD_ID"}'
+          parameters: '{"version":"${BUILD_ID}"}'
