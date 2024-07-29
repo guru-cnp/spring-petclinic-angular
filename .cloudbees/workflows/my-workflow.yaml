@@ -116,3 +116,9 @@ jobs:
           token: ${{secrets.GURUCI_TOKEN}}
           job-name: spring-petclinic/job/spring-petclinic-angular-backend/
           parameters: '{"version":"${{ cloudbees.version }}"}'
+      - uses: cloudbees-io/publish-evidence-item@v1
+        name: publish evidence
+        with:
+          content: |-
+            ## Backend Build
+            "version":"${{ cloudbees.version }}"
