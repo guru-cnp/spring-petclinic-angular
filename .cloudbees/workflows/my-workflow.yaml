@@ -122,3 +122,8 @@ jobs:
           content: |-
             ## Backend Build
             "version":"${{ cloudbees.version }}"
+      - uses: cloudbees-io/publish-evidence-item@v1
+        name: publish evidence
+        with:
+          content: |-
+            ## Second evidence
