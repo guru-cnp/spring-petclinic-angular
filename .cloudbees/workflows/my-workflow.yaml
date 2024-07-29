@@ -43,6 +43,12 @@ jobs:
         kind: scan
         with:
           language: JAVASCRIPT
+      - uses: cloudbees-io/publish-evidence-item@v1
+        name: publish evidence
+        with:
+          content: |-
+            ## Docker image
+            gururepservice/spring-petclinic-angular:${{ cloudbees.version}}
   manage_chart:
     steps:
       - uses: cloudbees-io/checkout@v1
@@ -109,4 +115,4 @@ jobs:
           username: ${{vars.GURUCI_USERNAME}}
           token: ${{secrets.GURUCI_TOKEN}}
           job-name: spring-petclinic/job/spring-petclinic-angular-backend/
-          parameters: "{\"version\":\"${{ cloudbees.version }}\"}"
+          parameters: '{"version":"${{ cloudbees.version }}"}'
