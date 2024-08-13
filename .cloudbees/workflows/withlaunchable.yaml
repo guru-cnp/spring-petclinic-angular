@@ -25,6 +25,7 @@ jobs:
       - uses: cloudbees-io/checkout@v1
         name: checkout
       - uses: docker://gururepservice/launchable:latest
-        name: launchable verify
+        name: launchable verify and record build
         run: |
           launchable verify || true
+          launchable record build --name spring-petclinic-angular-$BUILD_ID --source src=./
