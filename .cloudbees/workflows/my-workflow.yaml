@@ -34,7 +34,7 @@ jobs:
         kind: build
         with:
           dockerfile: Dockerfile
-          destination: gururepservice/spring-petclinic-angular:${{ cloudbees.version }},gururepservice/spring-petclinic-angular:latest
+          destination: gururepservice/spring-petclinic-angular:${{ cloudbees.version }}
           build-args: BUILDKIT_CONTEXT_KEEP_GIT_DIR=1,BUILDKIT_INLINE_CACHE=1
           labels: maintainer=Jakub Zarzycki,version=1.2.3.4
       - uses: cloudbees-io/sonarqube-bundled-sast-scan-code@v2
