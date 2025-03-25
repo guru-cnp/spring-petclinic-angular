@@ -17,7 +17,7 @@ on:
 env:
   BUILD_ID: ${{ cloudbees.version }}
   NEXUS_HELM: ${{ vars.guru_rep_nexus_url }}/repository/helm-hosted/
-  TARGET_ENV: petclinic-dev
+  TARGET_ENV: "petclinic-dev"
 jobs:
   build_docker:
     steps:
@@ -87,7 +87,7 @@ jobs:
           remote_password: ${{ secrets.guru_rep_nexus_cred }}
     needs: build_docker
   deploy_k8s:
-    environment: $TARGET_ENV
+    environment: ${{env.TARGET_ENV}}
     steps:
       - uses: guru-actions/kubeconfig@1.11
         name: setup kubeconf
@@ -113,7 +113,7 @@ jobs:
           name: gururepservice/spring-petclinic-angular
           version: ${{env.BUILD_ID}}
           url: docker.io/gururepservice/spring-petclinic-angular:${{ cloudbees.version }}
-          target-environment: $TARGET_ENV
+          target-environment: ${{env.TARGET_ENV}}
     needs:
       - manage_chart
       - build_backend_jenkins
