@@ -87,7 +87,7 @@ jobs:
           remote_password: ${{ secrets.guru_rep_nexus_cred }}
     needs: build_docker
   deploy_k8s:
-    environment: ${{env.TARGET_ENV}}
+    environment: petclinic-dev
     steps:
       - uses: guru-actions/kubeconfig@1.11
         name: setup kubeconf
