@@ -97,6 +97,14 @@ jobs:
           version: $BUILD_ID
           repousername: ${{ vars.guru_rep_nexus_user }}
           repopassword: ${{ secrets.guru_rep_nexus_cred }}
+      - name: register deployed artifacts
+        uses: https://github.com/cloudbees-io/register-deployed-artifact@v1
+        with:
+          name: "spring-petclinic-angular"
+          version: $BUILD_ID
+          url: "docker.io/gururepservice/spring-petclinic-angular:${{ cloudbees.version }}"
+          digest: ""
+          target-environment: "petclinic-dev"
     needs:
       - manage_chart
       - build_backend_jenkins
