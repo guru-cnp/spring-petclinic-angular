@@ -86,7 +86,7 @@ jobs:
           remote_password: ${{ secrets.guru_rep_nexus_cred }}
     needs: build_docker
   deploy_k8s:
-    environment: petclinic-prod
+    environment: petclinic-dev
     steps:
       - uses: guru-actions/kubeconfig@1.11
         name: setup kubeconf
@@ -112,7 +112,7 @@ jobs:
           name: gururepservice/spring-petclinic-angular
           version: ${{env.BUILD_ID}}
           url: docker.io/gururepservice/spring-petclinic-angular:${{ cloudbees.version }}
-          target-environment: petclinic-prod
+          target-environment: petclinic-dev
     needs:
       - manage_chart
       - build_backend_jenkins
