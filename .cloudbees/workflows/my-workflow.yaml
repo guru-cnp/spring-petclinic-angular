@@ -6,6 +6,14 @@ on:
     branches:
       - asd
   workflow_dispatch:
+    inputs:
+      environment:
+        type: choice
+        options:
+          - petclinic-dev
+          - petclinic-prod
+        default: petclinic-dev
+        required: true
 env:
   BUILD_ID: ${{ cloudbees.version }}
   NEXUS_HELM: ${{ vars.guru_rep_nexus_url }}/repository/helm-hosted/
@@ -17,6 +25,7 @@ jobs:
         run: |
           echo "BUILD_ID: $BUILD_ID"
           echo "NEXUS_HELM: $NEXUS_HELM"
+          echo "input pars: $environment"
       - uses: docker://alpine/git:2.43.0
         name: add safe dir
         run: |
