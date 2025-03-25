@@ -7,7 +7,7 @@ on:
       - asd
   workflow_dispatch:
     inputs:
-      environment:
+      target:
         type: choice
         options:
           - petclinic-dev
@@ -17,7 +17,7 @@ on:
 env:
   BUILD_ID: ${{ cloudbees.version }}
   NEXUS_HELM: ${{ vars.guru_rep_nexus_url }}/repository/helm-hosted/
-  TARGET_ENV: "petclinic-dev"
+  TARGET_ENV: petclinic-dev
 jobs:
   build_docker:
     steps:
@@ -26,7 +26,8 @@ jobs:
         run: |
           echo "BUILD_ID: $BUILD_ID"
           echo "NEXUS_HELM: $NEXUS_HELM"
-          echo "input pars: $TARGET_ENV"
+          echo "input pars: ${{inputs.target}}"
+          echo "Env: $TARGET_ENV"
       - uses: docker://alpine/git:2.43.0
         name: add safe dir
         run: |
