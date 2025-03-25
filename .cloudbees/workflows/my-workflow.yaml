@@ -17,6 +17,7 @@ on:
 env:
   BUILD_ID: ${{ cloudbees.version }}
   NEXUS_HELM: ${{ vars.guru_rep_nexus_url }}/repository/helm-hosted/
+  TARGET_ENV: ${{ cloudbees.workflow_dispatch.environment }}
 jobs:
   build_docker:
     steps:
@@ -25,7 +26,7 @@ jobs:
         run: |
           echo "BUILD_ID: $BUILD_ID"
           echo "NEXUS_HELM: $NEXUS_HELM"
-          echo "input pars: $environment"
+          echo "input pars: $TARGET_ENV"
       - uses: docker://alpine/git:2.43.0
         name: add safe dir
         run: |
@@ -86,7 +87,7 @@ jobs:
           remote_password: ${{ secrets.guru_rep_nexus_cred }}
     needs: build_docker
   deploy_k8s:
-    environment: ${{ inputs.environment }}
+    environment: $TARGET_ENV
     steps:
       - uses: guru-actions/kubeconfig@1.11
         name: setup kubeconf
@@ -112,7 +113,7 @@ jobs:
           name: gururepservice/spring-petclinic-angular
           version: ${{env.BUILD_ID}}
           url: docker.io/gururepservice/spring-petclinic-angular:${{ cloudbees.version }}
-          target-environment: ${{ inputs.environment }}
+          target-environment: $TARGET_ENV
     needs:
       - manage_chart
       - build_backend_jenkins
