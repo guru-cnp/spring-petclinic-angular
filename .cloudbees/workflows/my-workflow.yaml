@@ -100,7 +100,7 @@ jobs:
       - name: register deployed artifacts
         uses: https://github.com/cloudbees-io/register-deployed-artifact@v1
         with:
-          name: spring-petclinic-angular
+          name: gururepservice/spring-petclinic-angular
           version: ${{env.BUILD_ID}}
           url: docker.io/gururepservice/spring-petclinic-angular:${{ cloudbees.version }}
           digest: ""
