@@ -17,7 +17,7 @@ on:
 env:
   BUILD_ID: ${{ cloudbees.version }}
   NEXUS_HELM: ${{ vars.guru_rep_nexus_url }}/repository/helm-hosted/
-  TARGET_ENV: ${{ cloudbees.workflow_dispatch.environment }}
+  TARGET_ENV: petclinic-dev
 jobs:
   build_docker:
     steps:
